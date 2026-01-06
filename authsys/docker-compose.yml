@@ -1,0 +1,31 @@
+services:
+  db:
+    image: postgres:16
+    container_name: authsys_db
+    environment:
+      POSTGRES_DB: authsys
+      POSTGRES_USER: authsys
+      POSTGRES_PASSWORD: authsys
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  web:
+    build: .
+    container_name: authsys_web
+    env_file:
+      - .env
+    depends_on:
+      - db
+    ports:
+      - "8000:8000"
+    command: >
+      sh -c "
+      python manage.py migrate &&
+      python manage.py seed_demo &&
+      python manage.py runserver 0.0.0.0:8000
+      "
+
+volumes:
+  pgdata:
