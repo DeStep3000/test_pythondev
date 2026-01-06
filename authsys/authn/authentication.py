@@ -16,6 +16,9 @@ class JwtAuthentication(BaseAuthentication):
         self.cfg = JwtConfig(secret=settings.JWT_SECRET,
                              issuer=settings.JWT_ISSUER)
 
+    def authenticate_header(self, request):
+        return 'Bearer realm="api"'
+
     def authenticate(self, request):
         header = request.headers.get("Authorization", "")
         if not header.startswith("Bearer "):
