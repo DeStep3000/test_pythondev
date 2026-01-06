@@ -11,6 +11,7 @@ from django.shortcuts import render
 from django.utils import timezone
 from django.utils.timezone import now
 from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -146,13 +147,12 @@ class SoftDeleteMeView(APIView):
 
 
 class ReportsView(APIView):
-    permission_classes = [HasPermissionCode.with_code("reports:read")]
+    permission_classes = [
+        IsAuthenticated,
+        HasPermissionCode.with_code("reports:read"),
+    ]
 
     def get(self, request):
-        if not request.user:
-            return Response({"detail": "Unauthorized"}, status=401)
-
-        # если не хватает прав — DRF вернёт 403
         return Response({
             "items": [
                 {"id": 1, "title": "Sales report (mock)"},
