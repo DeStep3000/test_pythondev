@@ -1,5 +1,6 @@
 services:
   db:
+    container_name: authsys_db
     image: postgres:16
     environment:
       POSTGRES_DB: authsys
@@ -16,6 +17,7 @@ services:
       retries: 30
 
   web:
+    container_name: authsys_web
     build: .
     env_file:
       - .env
