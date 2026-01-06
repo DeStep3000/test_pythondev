@@ -78,10 +78,22 @@ WSGI_APPLICATION = 'authsys.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
+DJANGO_SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "dev-secret")
+SECRET_KEY = DJANGO_SECRET_KEY
+DEBUG = os.getenv("DJANGO_DEBUG", "1") == "1"
+ALLOWED_HOSTS = ["*"]
+
+JWT_SECRET = os.getenv("JWT_SECRET", "dev-jwt-secret-change-me")
+JWT_ISSUER = os.getenv("JWT_ISSUER", "authsys")
+
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": os.getenv("POSTGRES_DB", "authsys"),
+        "USER": os.getenv("POSTGRES_USER", "authsys"),
+        "PASSWORD": os.getenv("POSTGRES_PASSWORD", "authsys"),
+        "HOST": os.getenv("POSTGRES_HOST", "localhost"),
+        "PORT": os.getenv("POSTGRES_PORT", "5432"),
     }
 }
 
@@ -121,9 +133,6 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = 'static/'
-
-JWT_SECRET = os.getenv("JWT_SECRET", "dev-secret-change-me")
-JWT_ISSUER = os.getenv("JWT_ISSUER", "authsys")
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
