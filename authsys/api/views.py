@@ -162,16 +162,20 @@ class ReportsView(APIView):
 
 
 class DocumentsCreateView(APIView):
-    permission_classes = [HasPermissionCode.with_code("documents:create")]
+    permission_classes = [
+        IsAuthenticated,
+        HasPermissionCode.with_code("documents:create"),
+    ]
 
     def post(self, request):
-        if not request.user:
-            return Response({"detail": "Unauthorized"}, status=401)
         return Response({"detail": "created (mock)"}, status=201)
 
 
 class RulesView(APIView):
-    permission_classes = [HasPermissionCode.with_code("access:manage")]
+    permission_classes = [
+        IsAuthenticated,
+        HasPermissionCode.with_code("access:manage"),
+    ]
 
     def get(self, request):
         # вернуть список правил (упрощённо)
