@@ -1,0 +1,37 @@
+services:
+  db:
+    container_name: authsys_db
+    image: postgres:16
+    environment:
+      POSTGRES_DB: authsys
+      POSTGRES_USER: authsys
+      POSTGRES_PASSWORD: authsys
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U authsys -d authsys"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+
+  web:
+    container_name: authsys_web
+    build: .
+    env_file:
+      - .env
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8000:8000"
+    command: >
+      sh -c "
+      python manage.py migrate &&
+      python manage.py seed_demo &&
+      python manage.py runserver 0.0.0.0:8000
+      "
+
+volumes:
+  pgdata:
